@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 class DataViewHolder extends RecyclerView.ViewHolder {
@@ -19,17 +20,10 @@ class DataViewHolder extends RecyclerView.ViewHolder {
         number = itemView.findViewById(R.id.number);
     }
 
-    public void bind(DataModel model) {
+    public void bind(DataModel model, View.OnClickListener listener) {
         number.setText(String.valueOf(model.mNumber));
         number.setTextColor(model.mColor);
 
-        number.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Context applicationContext = number.getContext().getApplicationContext();
-                Toast.makeText(applicationContext, model.mNumber, Toast.LENGTH_SHORT).show();
-            }
-        });
+        number.setOnClickListener(listener);
     }
 }

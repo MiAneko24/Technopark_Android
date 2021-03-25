@@ -1,5 +1,6 @@
 package com.example.tphomeworkmianeko;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,12 @@ import androidx.annotation.NonNull;
 
 class DataAdapter extends RecyclerView.Adapter<DataViewHolder> {
 
-    List<DataModel> data = DataSource.getInstance().getRemoteData();
+    MainActivity activity;
+
+    public void SetActivity(MainActivity parent)
+    {
+        activity = parent;
+    }
 
     @NonNull
     @Override
@@ -20,15 +26,22 @@ class DataAdapter extends RecyclerView.Adapter<DataViewHolder> {
         return new DataViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull DataViewHolder holder, int position) {
-        DataModel model = data.get(position);
-        holder.bind(model);
+        DataModel model = DataSource.getInstance().getRemoteData().get(position);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.Callback(model);
+            }
+        };
+        holder.bind(model, listener);
     }
 
     @Override
     public int getItemCount() {
-            return data.size();
+            return DataSource.getInstance().getRemoteData().size();
         }
 }
 
