@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class RecyclerViewFragment extends Fragment {
     RecyclerView recyclerView;
@@ -33,13 +34,27 @@ public class RecyclerViewFragment extends Fragment {
             recyclerView.setLayoutManager(new GridLayoutManager(activity, 3));
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(activity, 4));
-
         }
 
         DataAdapter adapter = new DataAdapter();
         adapter.SetActivity((MainActivity) getActivity());
         recyclerView.setAdapter(adapter);
+
+        setButton(view);
         return view;
+    }
+
+
+    protected void setButton(View main_view) {
+        Button button = main_view.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View v) {
+                                          DataSource.getInstance().setData();
+                                          changeRecyclerView();
+                                      }
+                                  }
+        );
     }
 
     @Override

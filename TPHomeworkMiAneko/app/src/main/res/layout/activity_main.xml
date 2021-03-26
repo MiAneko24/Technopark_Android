@@ -6,12 +6,4 @@
     android:id="@+id/container"
     >
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:text="@string/add_element"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        />
 </FrameLayout>

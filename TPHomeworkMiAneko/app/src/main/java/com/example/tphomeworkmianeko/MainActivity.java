@@ -21,26 +21,10 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, viewFragment)
-                    .addToBackStack(null)
                     .commit();
-            setButton(viewFragment);
         }
-
     }
 
-    protected void setButton(RecyclerViewFragment viewFragment)
-    {
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener()
-              {
-                  @Override
-                  public void onClick(View v) {
-                      DataSource.getInstance().setData();
-                      viewFragment.changeRecyclerView();
-                  }
-              }
-        );
-    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
