@@ -1,12 +1,10 @@
 package com.example.tphomeworkmianeko;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -14,60 +12,67 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+@SuppressWarnings("ConstantConditions")
 public class RecyclerViewFragment extends Fragment {
     RecyclerView recyclerView;
+    static final String data_len_key = "data_length";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_placeholder, container, false);
 
-        recyclerView = view.findViewById(R.id.data_show);
-
-        recyclerView.setItemViewCacheSize(10);
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            recyclerView.setLayoutManager(new GridLayoutManager(activity, 3));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(activity, 4));
+        if (savedInstanceState != null) {
+            int amount = savedInstanceState.getInt(data_len_key);
+            DataSource.getInstance().setAmount(amount);
         }
 
+        int columns = getResources().getInteger(R.integer.amount_of_columns);
+
         DataAdapter adapter = new DataAdapter();
-        adapter.SetActivity((MainActivity) getActivity());
+        //noinspection ConstantConditions
+        if (getActivity().getClass().equals(MainActivity.class))
+            adapter.setOnNumberClickListener((MainActivity) getActivity());
+
+        recyclerView = view.findViewById(R.id.data_show);
+        recyclerView.setItemViewCacheSize(10);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columns));
         recyclerView.setAdapter(adapter);
 
         setButton(view);
+
         return view;
     }
 
-
     protected void setButton(View main_view) {
         Button button = main_view.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-                                      @Override
-                                      public void onClick(View v) {
-                                          DataSource.getInstance().setData();
-                                          changeRecyclerView();
-                                      }
-                                  }
+        button.setOnClickListener(v -> {
+                    DataSource.getInstance().addData();
+                    changeRecyclerView();
+                }
         );
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        int amount = DataSource.getInstance().getRemoteData().size();
+        outState.putInt(data_len_key, amount);
+
         super.onSaveInstanceState(outState);
     }
 
     public void changeRecyclerView() {
-        recyclerView.getAdapter().notifyItemInserted(DataSource.getInstance().getRemoteData().size() - 1);
-    }
+        if (recyclerView.getAdapter() != null) {
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+            recyclerView.getAdapter().notifyItemInserted(DataSource
+                            .getInstance()
+                            .getRemoteData()
+                            .size() - 1);
+        }
     }
 }
